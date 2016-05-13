@@ -9,14 +9,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 injectTapEventPlugin();
 
-
-import StatusCard from './components/StatusCard';
-
-const components = [
-  'XMAN',
-  'MAPPING',
-  'ARCID',
-];
+import Root from './components/Root';
 
 class Main extends Component {
 
@@ -24,15 +17,7 @@ class Main extends Component {
     return (
       <MuiThemeProvider muiTheme={theme}>
         <div>
-          <h1>Supervisor UI</h1>
-          {_.map(components, (c, key) =>
-            <StatusCard
-              key={key}
-              name={c}
-            >
-              Test !
-            </StatusCard>
-          )}
+          <Root />
         </div>
       </MuiThemeProvider>
     );
