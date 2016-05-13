@@ -11,7 +11,10 @@ import processStatus from '../status-processor';
 class Root extends Component {
   constructor(props) {
     super(props);
-    this.refreshInterval = null;
+
+    this.refreshHandler = null;
+    this.refreshInterval = 15000;
+
     this.state = {
       lastRefreshed: null,
       isLoading: false,
@@ -20,15 +23,11 @@ class Root extends Component {
   }
 
   componentDidMount() {
-    const interval = 15000;
-
-    this.refreshInterval = setInterval(this.fetchStatus, interval);
-
-    this.fetchStatus();
+    this.forceRefresh();
   }
 
   componentWillUnmount() {
-    clearInterval(this.refreshInterval);
+    clearInterval(this.refreshHandler);
   }
 
   fetchStatus = () => {
@@ -47,12 +46,24 @@ class Root extends Component {
       )
   };
 
+  forceRefresh = () => {
+    const { isLoading } = this.state;
+    if(isLoading) {
+      return;
+    }
+
+    clearInterval(this.refreshHandler);
+    this.refreshHandler = setInterval(this.fetchStatus, this.refreshInterval);
+    this.fetchStatus();
+  };
+
   render() {
     const {
       status,
       isLoading,
       lastRefreshed,
     } = this.state;
+
     if(isLoading && !lastRefreshed) {
       return (
         <span>Initial load ...</span>
@@ -64,6 +75,7 @@ class Root extends Component {
         <MainTitle
           showLoader={isLoading}
           lastRefreshed={lastRefreshed}
+          handleForceRefresh={this.forceRefresh}
         />
         <XmanStatus />
         <MappingStatus />

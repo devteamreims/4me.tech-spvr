@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 import {Card, CardHeader, CardText} from 'material-ui/Card';
 import Avatar from 'material-ui/Avatar';
+import Divider from 'material-ui/Divider';
 
 import CheckIcon from 'material-ui/svg-icons/action/check-circle';
 import WarningIcon from 'material-ui/svg-icons/alert/warning';
@@ -22,6 +23,12 @@ const iconColors = {
 };
 
 import StatusSubtitle from './StatusSubtitle';
+
+const styles = {
+  card: {
+    margin: 10,
+  },
+};
 
 class StatusCard extends Component {
   getAvatar = () => {
@@ -63,15 +70,15 @@ class StatusCard extends Component {
     return (
       <Card
         initiallyExpanded={status !== 'normal'}
+        style={styles.card}
       >
         <CardHeader
           title={name}
           subtitle={<StatusSubtitle warningCount={warningCount} errorCount={errorCount} />}
           avatar={this.getAvatar()}
-          actAsExpander={true}
-          showExpandableButton={true}
         />
-        <CardText expandable={true}>
+        <Divider />
+        <CardText>
           {children}
         </CardText>
       </Card>

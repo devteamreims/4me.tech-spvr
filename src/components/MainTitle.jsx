@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import _ from 'lodash';
 
 import RefreshIndicator from 'material-ui/RefreshIndicator';
 
@@ -19,18 +20,23 @@ class MainTitle extends Component {
     const {
       showLoader,
       lastRefreshed,
+      handleForceRefresh = _.noop
     } = this.props;
 
     return (
       <div style={styles.outer}>
         <h1 style={{display: 'inline'}}>Tech monitor</h1>
-        <div style={{display: 'inline'}}>
-          {!showLoader && <TimeAgo when={lastRefreshed} />}
+        <div
+          style={{display: 'inline'}}
+          onClick={handleForceRefresh}
+        >
           <RefreshIndicator
-            status={showLoader ? 'loading' : 'hide'}
+            status={showLoader ? 'loading' : 'ready'}
             top={0}
             left={0}
+            percentage={100}
             style={{position: 'relative', display: 'inline-block'}}
+
           />
         </div>
       </div>
