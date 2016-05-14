@@ -4,12 +4,15 @@ import _ from 'lodash';
 import StatusCard from './StatusCard';
 import StatusSubtitle from './StatusSubtitle';
 
+const transformTitle = _.flow(_.startCase, _.toUpper);
+
 class TopLevelCard extends Component {
   render() {
     const {
       title,
       status,
-      subtitle: propSubtitle,
+      headerMeta,
+      subtitle,
       items,
       ...other
     } = this.props;
@@ -28,16 +31,16 @@ class TopLevelCard extends Component {
         let children = more;
         if(_.isArray(children)) {
           children = (
-            <div>
-              {_.map(more, (m, key) => <p key={key}>{m}</p>)}
-            </div>
+            <ul>
+              {_.map(more, (m, key) => <li key={key}>{m}</li>)}
+            </ul>
           );
         }
 
         return (
           <StatusCard
-            title={name}
-            description={summary}
+            title={transformTitle(name)}
+            headerMeta={summary}
             status={status}
             subtitle={description}
             when={when}
@@ -48,19 +51,14 @@ class TopLevelCard extends Component {
       });
     }
 
+
     return (
       <StatusCard
-        title={_.toUpper(title)}
+        title={transformTitle(title)}
         status={status}
         size="large"
-        subtitle={
-          propSubtitle ||
-          <StatusSubtitle
-            status="normal"
-            warningCount={0}
-            errorCount={0}
-          />
-        }
+        subtitle={subtitle}
+        headerMeta={headerMeta}
         children={children}
         {...other}
       />
@@ -71,7 +69,8 @@ class TopLevelCard extends Component {
 TopLevelCard.propTypes = {
   title: React.PropTypes.string.isRequired,
   status: React.PropTypes.string.isRequired,
-  subtitle: React.PropTypes.string,
+  subtitle: React.PropTypes.node,
+  headerMeta: React.PropTypes.node,
   items: React.PropTypes.object,
 };
 

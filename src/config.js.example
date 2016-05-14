@@ -1,0 +1,20 @@
+const xmanFetchers = {
+  'EGLL': 'http://egll-fetcher/status',
+};
+const mapping = 'http://mapping/status';
+const xmanOrchestrator = 'http://xman-orchestrator/status';
+const arcid = 'http://arcid/status';
+
+export const api = {
+  xmanFetchers,
+  mapping,
+  xmanOrchestrator,
+  arcid,
+};
+
+
+const expectedClients = 20;
+
+export const constants = {
+  expectedClients,
+};

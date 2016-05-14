@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import _ from 'lodash';
 
 import './styles/styles.scss';
+import 'normalize.css';
 
 import theme from './theme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';

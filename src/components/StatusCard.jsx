@@ -73,13 +73,13 @@ class StatusCard extends Component {
       children,
       subtitle,
       size,
-      description,
+      headerMeta,
       style = {},
     } = this.props;
 
-    let headerChildren = description ? (
+    let headerChildren = headerMeta ? (
       <div style={{marginLeft: _.get(avatarSizes, size, 30) + 16}}>
-        {description}
+        {headerMeta}
       </div>
     ) : null;
 
@@ -109,7 +109,7 @@ StatusCard.propTypes = {
   title: React.PropTypes.string.isRequired,
   status: React.PropTypes.oneOf(['normal', 'warning', 'error', 'unknown']),
   subtitle: React.PropTypes.node,
-  description: React.PropTypes.node,
+  headerMeta: React.PropTypes.node,
   size: React.PropTypes.oneOf(['small', 'normal', 'large']),
 };
 

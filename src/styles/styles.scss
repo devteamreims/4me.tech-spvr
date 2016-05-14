@@ -1,10 +1,24 @@
+@import '~normalize.css/normalize.css';
+
 html,
-body,
-#app {
+body {
   background: #333;
   padding: 0;
   margin: 0;
   height: 100%;
-  width: 100%;
+  border: 0;
   color: #FFF;
+}
+
+#app {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  display: flex;
+}
+
+// div data-reactroot
+#app > div {
+  flex-grow: 1;
+  display: flex;
 }

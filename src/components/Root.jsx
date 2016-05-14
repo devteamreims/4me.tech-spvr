@@ -4,7 +4,6 @@ import MainTitle from './MainTitle';
 import TopLevelCard from './TopLevelCard';
 
 import fetchStatus from '../fetchers';
-import processStatus from '../status-processor';
 
 const components = [
   'mapping',
@@ -16,12 +15,20 @@ const styles = {
   container: {
     display: 'flex',
     flexDirection: 'row',
-    padding: 20,
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    padding: 0,
+    margin: 0,
+    flexGrow: 1,
+    overflowX: 'hidden',
   },
   card: {
     margin: 20,
+    padding: 0,
     flexGrow: 1,
+    flexShrink: 0,
     flexBasis: 0,
+    minWidth: 300,
   },
 };
 
@@ -51,7 +58,6 @@ class Root extends Component {
     this.setState({isLoading: true});
     console.log('Refreshing status ...');
     return fetchStatus()
-      .then(status => processStatus(status))
       .then(status => {
         this.setState({
           isLoading: false,
@@ -85,6 +91,29 @@ class Root extends Component {
       );
     }
 
+    return (
+      <div>
+        <MainTitle
+          showLoader={isLoading}
+          lastRefreshed={lastRefreshed}
+          handleForceRefresh={this.forceRefresh}
+        />
+        <div style={styles.container}>
+          {_.map(status, (c, key) =>
+            <TopLevelCard
+              title={key}
+              style={styles.card}
+              status={_.get(c, 'status')}
+              subtitle={_.get(c, 'description')}
+              headerMeta={_.get(c, 'summary')}
+              items={_.get(c, 'items')}
+              key={key}
+            />
+          )}
+        </div>
+      </div>
+    );
+
     return(
       <div>
         <MainTitle
@@ -98,7 +127,8 @@ class Root extends Component {
               title={key}
               style={styles.card}
               status={_.get(c, 'status')}
-              subtitle={_.get(c, 'summary')}
+              subtitle={_.get(c, 'description')}
+              headerMeta={_.get(c, 'summary')}
               items={_.get(c, 'items')}
               key={key}
             />
