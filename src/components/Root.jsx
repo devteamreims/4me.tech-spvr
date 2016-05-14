@@ -1,12 +1,29 @@
 import React, { Component } from 'react';
 
 import MainTitle from './MainTitle';
-import XmanStatus from './xman';
-import MappingStatus from './mapping';
+import TopLevelCard from './TopLevelCard';
 
 import fetchStatus from '../fetchers';
 import processStatus from '../status-processor';
 
+const components = [
+  'mapping',
+  'xman',
+  'arcid',
+];
+
+const styles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'row',
+    padding: 20,
+  },
+  card: {
+    margin: 20,
+    flexGrow: 1,
+    flexBasis: 0,
+  },
+};
 
 class Root extends Component {
   constructor(props) {
@@ -27,23 +44,22 @@ class Root extends Component {
   }
 
   componentWillUnmount() {
-    clearInterval(this.refreshHandler);
+    clearTimeout(this.refreshHandler);
   }
 
   fetchStatus = () => {
     this.setState({isLoading: true});
+    console.log('Refreshing status ...');
     return fetchStatus()
-      .then(processStatus)
+      .then(status => processStatus(status))
       .then(status => {
-        console.log('Refresh ended !');
-      })
-      .then(status =>
         this.setState({
           isLoading: false,
           lastRefreshed: Date.now(),
           status,
-        })
-      )
+        });
+        this.refreshHandler = setTimeout(this.fetchStatus, this.refreshInterval);
+      })
   };
 
   forceRefresh = () => {
@@ -52,8 +68,7 @@ class Root extends Component {
       return;
     }
 
-    clearInterval(this.refreshHandler);
-    this.refreshHandler = setInterval(this.fetchStatus, this.refreshInterval);
+    clearTimeout(this.refreshHandler);
     this.fetchStatus();
   };
 
@@ -77,8 +92,18 @@ class Root extends Component {
           lastRefreshed={lastRefreshed}
           handleForceRefresh={this.forceRefresh}
         />
-        <XmanStatus />
-        <MappingStatus />
+        <div style={styles.container}>
+          {_.map(status, (c, key) =>
+            <TopLevelCard
+              title={key}
+              style={styles.card}
+              status={_.get(c, 'status')}
+              subtitle={_.get(c, 'summary')}
+              items={_.get(c, 'items')}
+              key={key}
+            />
+          )}
+        </div>
       </div>
     );
   }

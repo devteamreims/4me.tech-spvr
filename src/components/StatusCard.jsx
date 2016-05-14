@@ -14,12 +14,14 @@ import {
   red500,
   green500,
   orange500,
+  grey500,
 } from 'material-ui/styles/colors';
 
 const iconColors = {
   normal: green500,
   warning: orange500,
   error: red500,
+  unknown: grey500,
 };
 
 import StatusSubtitle from './StatusSubtitle';
@@ -30,18 +32,25 @@ const styles = {
   },
 };
 
+const avatarSizes = {
+  small: 20,
+  normal: 35,
+  large: 50,
+};
+
 class StatusCard extends Component {
   getAvatar = () => {
     const {
       status,
+      size,
     } = this.props;
 
-    const size = 40;
+    const actualSize = _.get(avatarSizes, size, 30);
     const iconProps = {
       color: _.get(iconColors, status),
       style: {
-        width: size,
-        height: size,
+        width: actualSize,
+        height: actualSize,
       },
     };
 
@@ -59,38 +68,53 @@ class StatusCard extends Component {
 
   render() {
     const {
-      name,
+      title,
       status,
       children,
       subtitle,
-      warningCount,
-      errorCount,
+      size,
+      description,
+      style = {},
     } = this.props;
+
+    let headerChildren = description ? (
+      <div style={{marginLeft: _.get(avatarSizes, size, 30) + 16}}>
+        {description}
+      </div>
+    ) : null;
 
     return (
       <Card
         initiallyExpanded={status !== 'normal'}
-        style={styles.card}
+        style={Object.assign({}, styles.card, style)}
       >
         <CardHeader
-          title={name}
-          subtitle={<StatusSubtitle warningCount={warningCount} errorCount={errorCount} />}
+          title={title}
+          subtitle={subtitle}
           avatar={this.getAvatar()}
+          children={headerChildren}
         />
-        <Divider />
-        <CardText>
-          {children}
-        </CardText>
+        {children && [
+          <Divider key="divider" />,
+          <CardText key="text">
+            {children}
+          </CardText>
+        ]}
       </Card>
     );
   }
 }
 
 StatusCard.propTypes = {
-  status: React.PropTypes.oneOf(['normal', 'warning', 'error']),
-  warningCount: React.PropTypes.number.isRequired,
-  errorCount: React.PropTypes.number.isRequired,
+  title: React.PropTypes.string.isRequired,
+  status: React.PropTypes.oneOf(['normal', 'warning', 'error', 'unknown']),
+  subtitle: React.PropTypes.node,
+  description: React.PropTypes.node,
+  size: React.PropTypes.oneOf(['small', 'normal', 'large']),
 };
 
+StatusCard.defaultProps = {
+  size: 'normal',
+};
 
 export default StatusCard;

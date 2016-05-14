@@ -1,7 +1,11 @@
 export function maxStatus(items) {
   const reduceStatus = (prev, current) => {
     if(current === 'critical' || prev === 'critical' || current === 'error' || prev === 'error') {
-      return 'critical';
+      return 'error';
+    }
+
+    if(current === 'unknown' || prev === 'unknown') {
+      return 'unknown';
     }
 
     if(current === 'warning' || prev === 'warning') {
