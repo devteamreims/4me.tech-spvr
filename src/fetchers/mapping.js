@@ -6,6 +6,7 @@ import {
 } from '../config';
 
 import {maxStatus} from '../utils/status';
+import socketStatus from './socket';
 
 export default function fetchXmanOrchestratorStatus() {
   return request.get(api.mapping)
@@ -18,21 +19,19 @@ export default function fetchXmanOrchestratorStatus() {
 function processMapping(raw) {
   // Handle coreSocketClients
   const rawCoreSocketClients = _.get(raw, 'coreSocketClients');
-  const coreSocketClients = {
-    status: 'unknown',
-    when: Date.now(),
-    description: 'Responsible for informing 4ME clients of who they are',
-    summary: `${_.size(rawCoreSocketClients)} client(s) connected`,
-  };
+  const coreSocketClients = Object.assign(
+    {},
+    socketStatus(rawCoreSocketClients),
+    {description: 'Responsible for informing 4ME clients of who they are'}
+  );
 
   // Handle mappingSocketClients
   const rawMappingSocketClients = _.get(raw, 'mappingSocketClients');
-  const mappingSocketClients = {
-    status: 'unknown',
-    when: Date.now(),
-    description: 'Responsible for displaying the room map',
-    summary: `${_.size(rawMappingSocketClients)} client(s) connected`,
-  };
+  const mappingSocketClients = Object.assign(
+    {},
+    socketStatus(rawMappingSocketClients),
+    {description: 'Responsible for displaying the room map'}
+  );
 
   const items = {
     coreSocketClients,

@@ -6,6 +6,7 @@ import {
 } from '../config';
 
 import {maxStatus} from '../utils/status';
+import socketStatus from './socket';
 
 export default function fetchXmanOrchestratorStatus() {
   return request.get(api.arcid)
@@ -18,12 +19,11 @@ export default function fetchXmanOrchestratorStatus() {
 function processArcid(raw) {
   // Handle coreSocketClients
   const rawSocketClients = _.get(raw, 'socketClients');
-  const socketClients = {
-    status: 'unknown',
-    when: Date.now(),
-    description: 'Clients connected to the ARCID backend',
-    summary: `${_.size(rawSocketClients)} client(s) connected`,
-  };
+  const socketClients = Object.assign(
+    {},
+    socketStatus(rawSocketClients),
+    {description: 'Clients connected to the ARCID backend'}
+  );
 
   // Handle autocompleteStatus
   const rawAutocomplete = _.get(raw, 'autocompleteStatus');

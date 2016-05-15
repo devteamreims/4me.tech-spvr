@@ -6,6 +6,7 @@ import {
 } from '../config';
 
 import {maxStatus} from '../utils/status';
+import socketStatus from './socket';
 
 export default function fetchXmanOrchestratorStatus() {
   return request.get(api.xmanOrchestrator)
@@ -41,21 +42,19 @@ function processOrchestrator(raw) {
     .value();
 
   // Handle socketClients
-
-  const rawClients = _.get(items, 'socketClients');
-  const socketClients = {
-    status: 'unknown',
-    when: Date.now(),
-    description: 'Number of 4ME clients connected',
-    summary: `${_.size(rawClients)} client(s) connected`,
-  };
+  const rawSocketClients = _.get(items, 'socketClients');
+  const socketClients = Object.assign(
+    {},
+    socketStatus(rawSocketClients),
+    {description: 'Clients connected to the XMAN backend'}
+  );
 
   return {
     status,
     items: {
+      socketClients,
       positions,
       ...fetchers,
-      socketClients,
     },
     rawObj: raw,
     when: Date.now(),
