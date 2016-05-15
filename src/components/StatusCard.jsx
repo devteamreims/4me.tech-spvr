@@ -78,7 +78,12 @@ class StatusCard extends Component {
     } = this.props;
 
     let headerChildren = headerMeta ? (
-      <div style={{marginLeft: _.get(avatarSizes, size, 30) + 16}}>
+      <div
+        style={{
+          marginLeft: _.get(avatarSizes, size, 30) + 16, // Add icon margin
+          whiteSpace: 'initial', // Allow new lines (seems to be overridden somewhere in material ui)
+        }}
+      >
         {headerMeta}
       </div>
     ) : null;
