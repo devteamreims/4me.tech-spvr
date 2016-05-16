@@ -8,7 +8,7 @@ import {
 import {maxStatus} from '../utils/status';
 import socketStatus from './socket';
 
-export default function fetchXmanOrchestratorStatus() {
+export default function fetchMapping() {
   return request.get(api.mapping)
     .then(resp => resp.body)
     .then(processMapping)

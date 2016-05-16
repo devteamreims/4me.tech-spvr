@@ -8,7 +8,7 @@ import {
 import {maxStatus} from '../utils/status';
 import socketStatus from './socket';
 
-export default function fetchXmanOrchestratorStatus() {
+export default function fetchArcid() {
   return request.get(api.arcid)
     .then(resp => resp.body)
     .then(processArcid)
@@ -68,11 +68,11 @@ function processArcid(raw) {
 
 
 function backendUnavailable(err) {
-  console.log('Mapping backend could not be reached');
+  console.log('ARCID backend could not be reached');
   console.log(err);
   return {
     status: 'unknown',
-    summary: `Mapping backend could not be reached`,
+    summary: `ARCID backend could not be reached`,
     when: Date.now(),
   };
 }

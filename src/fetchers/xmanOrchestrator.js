@@ -8,7 +8,7 @@ import {
 import {maxStatus} from '../utils/status';
 import socketStatus from './socket';
 
-export default function fetchXmanOrchestratorStatus() {
+export default function fetchXmanOrchestrator() {
   return request.get(api.xmanOrchestrator)
     .then(resp => resp.body)
     .then(processOrchestrator)
@@ -23,10 +23,10 @@ function processOrchestrator(raw) {
     status = 'error';
   }
 
-  const items = _.get(raw, 'items');
+  const rawItems = _.get(raw, 'items');
 
   // Handle positions item
-  const rawPositions = _.get(items, 'positions');
+  const rawPositions = _.get(rawItems, 'positions');
   const positions = {
     status: _.get(rawPositions, 'status', 'unknown'),
     when: _.get(rawPositions, 'lastUpdated'),
@@ -35,27 +35,29 @@ function processOrchestrator(raw) {
   };
 
   // Handle fetchers items
-  const rawFetchers = _.get(items, 'fetchers');
+  const rawFetchers = _.get(rawItems, 'fetchers');
   const fetchers = _(rawFetchers)
     .mapValues(processFetcher)
     .mapKeys((val, key) => `${key}Fetcher`)
     .value();
 
   // Handle socketClients
-  const rawSocketClients = _.get(items, 'socketClients');
+  const rawSocketClients = _.get(rawItems, 'socketClients');
   const socketClients = Object.assign(
     {},
     socketStatus(rawSocketClients),
     {description: 'Clients connected to the XMAN backend'}
   );
 
+  const items = {
+    socketClients,
+    positions,
+    ...fetchers,
+  };
+
   return {
-    status,
-    items: {
-      socketClients,
-      positions,
-      ...fetchers,
-    },
+    status: maxStatus(_.map(items, 'status')),
+    items,
     rawObj: raw,
     when: Date.now(),
   };
