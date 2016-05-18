@@ -13,15 +13,15 @@ import UnknownIcon from 'material-ui/svg-icons/action/help';
 import {
   red500,
   green500,
-  orange500,
-  grey500,
+  yellow500,
+  purple500,
 } from 'material-ui/styles/colors';
 
 const iconColors = {
   normal: green500,
-  warning: orange500,
+  warning: yellow500,
   error: red500,
-  unknown: grey500,
+  unknown: purple500,
 };
 
 import StatusSubtitle from './StatusSubtitle';
