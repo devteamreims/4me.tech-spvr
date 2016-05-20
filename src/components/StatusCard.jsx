@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
+import moment from 'moment';
 
 import {Card, CardHeader, CardText} from 'material-ui/Card';
 import Avatar from 'material-ui/Avatar';
@@ -66,27 +67,71 @@ class StatusCard extends Component {
     }
   };
 
+  getHeaderChildren() {
+    const {
+      headerMeta,
+      when,
+      size,
+    } = this.props;
+
+    const shouldDisplayChildren = headerMeta || when;
+
+    if(!shouldDisplayChildren) {
+      return;
+    }
+
+    let children = [];
+
+    if(when) {
+      moment.locale('fr');
+      const formattedTimestamp = moment(when).fromNow();
+      children = [
+        ...children,
+        <span>{formattedTimestamp}</span>,
+      ];
+    }
+
+    if(headerMeta) {
+      if(typeof headerMeta === 'string') {
+        children = [
+          ...children,
+          <span>{headerMeta}</span>
+        ];
+      } else {
+        children = [
+          ...children,
+          headerMeta,
+        ];
+      }
+    }
+
+    return (
+      <div
+        style={{
+          marginLeft: _.get(avatarSizes, size, 30) + 16, // Add icon margin
+          whiteSpace: 'initial', // Allow new lines (seems to be overridden somewhere in material ui)
+          flexDirection: 'column',
+          display: 'flex',
+        }}
+      >
+        {children}
+      </div>
+    );
+
+  }
+
   render() {
     const {
       title,
       status,
       children,
       subtitle,
+      when,
       size,
       headerMeta,
       style = {},
     } = this.props;
 
-    let headerChildren = headerMeta ? (
-      <div
-        style={{
-          marginLeft: _.get(avatarSizes, size, 30) + 16, // Add icon margin
-          whiteSpace: 'initial', // Allow new lines (seems to be overridden somewhere in material ui)
-        }}
-      >
-        {headerMeta}
-      </div>
-    ) : null;
 
     return (
       <Card
@@ -97,7 +142,7 @@ class StatusCard extends Component {
           title={title}
           subtitle={subtitle}
           avatar={this.getAvatar()}
-          children={headerChildren}
+          children={this.getHeaderChildren()}
         />
         {children && [
           <Divider key="divider" />,
@@ -115,6 +160,7 @@ StatusCard.propTypes = {
   status: React.PropTypes.oneOf(['normal', 'warning', 'error', 'unknown']),
   subtitle: React.PropTypes.node,
   headerMeta: React.PropTypes.node,
+  timestamp: React.PropTypes.string,
   size: React.PropTypes.oneOf(['small', 'normal', 'large']),
 };
 
