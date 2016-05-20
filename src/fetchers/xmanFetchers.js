@@ -35,6 +35,7 @@ function processSingleFetcher(raw) {
   return {
     status: error ? 'error' : 'normal',
     description: 'Last request to remote XML data',
+    more: error,
     rawObj: raw,
     when,
   };
