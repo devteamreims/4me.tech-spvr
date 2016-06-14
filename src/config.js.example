@@ -1,20 +1,26 @@
 const xmanFetchers = {
-  'EGLL': 'http://egll-fetcher/status',
+  'EGLL': 'http://eggl.fetcher.4me/status',
 };
-const mapping = 'http://mapping/status';
-const xmanOrchestrator = 'http://xman-orchestrator/status';
-const arcid = 'http://arcid/status';
+const mapping = 'http://mapping.4me/status';
+const xmanOrchestrator = 'http://xman.4me/status';
+const arcid = 'http://arcid.4me/status';
+
+const flightPositions = 'http://flight.positions.4me/status';
 
 export const api = {
   xmanFetchers,
   mapping,
   xmanOrchestrator,
   arcid,
+  flightPositions,
 };
 
 
+/* Expected socket clients */
 const expectedClients = 25;
-
+/* Refresh interval */
+const refreshInterval = 15*1000;
 export const constants = {
   expectedClients,
+  refreshInterval,
 };
