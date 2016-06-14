@@ -70,6 +70,8 @@ class RefreshIndicator extends Component {
       percentage,
     } = this.state;
 
+    const color = _.get(this, 'context.muiTheme.refreshIndicator.loadingStrokeColor')
+
     return (
       <div
         style={{display: 'inline'}}
@@ -79,7 +81,8 @@ class RefreshIndicator extends Component {
           status={showLoader ? 'loading' : 'ready'}
           top={0}
           left={0}
-          color={"red"}
+          color={color}
+          loadingColor={color}
           percentage={percentage}
           {...rest}
         />
@@ -93,6 +96,10 @@ RefreshIndicator.propTypes = {
   onClick: React.PropTypes.func,
   lastRefresh: React.PropTypes.number,
   nextRefresh: React.PropTypes.number,
+};
+
+RefreshIndicator.contextTypes = {
+  muiTheme: React.PropTypes.object.isRequired,
 };
 
 export default RefreshIndicator;
