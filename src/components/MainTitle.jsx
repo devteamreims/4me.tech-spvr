@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 
-import RefreshIndicator from 'material-ui/RefreshIndicator';
+import RefreshIndicator from './RefreshIndicator';
 
 import TimeAgo from './TimeAgo';
 
@@ -19,26 +19,21 @@ class MainTitle extends Component {
   render() {
     const {
       showLoader,
-      lastRefreshed,
+      lastRefresh,
+      nextRefresh,
       handleForceRefresh = _.noop
     } = this.props;
 
     return (
       <div style={styles.outer}>
         <h1 style={{display: 'inline'}}>Tech monitor</h1>
-        <div
-          style={{display: 'inline'}}
+        <RefreshIndicator
+          showLoader={showLoader}
+          style={{position: 'relative', display: 'inline-block'}}
           onClick={handleForceRefresh}
-        >
-          <RefreshIndicator
-            status={showLoader ? 'loading' : 'ready'}
-            top={0}
-            left={0}
-            percentage={100}
-            style={{position: 'relative', display: 'inline-block'}}
-
-          />
-        </div>
+          lastRefresh={lastRefresh}
+          nextRefresh={nextRefresh}
+        />
       </div>
     );
   }
@@ -46,7 +41,8 @@ class MainTitle extends Component {
 
 MainTitle.propTypes = {
   showLoader: React.PropTypes.bool,
-  lastRefreshed: React.PropTypes.number,
+  lastRefresh: React.PropTypes.number,
+  nextRefresh: React.PropTypes.number,
   handleForceRefresh: React.PropTypes.func,
 };
 

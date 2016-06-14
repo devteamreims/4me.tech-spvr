@@ -5,11 +5,8 @@ import TopLevelCard from './TopLevelCard';
 
 import fetchStatus from '../fetchers';
 
-const components = [
-  'mapping',
-  'xman',
-  'arcid',
-];
+
+import { constants } from '../config';
 
 const styles = {
   container: {
@@ -37,12 +34,13 @@ class Root extends Component {
     super(props);
 
     this.refreshHandler = null;
-    this.refreshInterval = 15000;
+    this.refreshInterval = constants.refreshInterval || 15000;
 
     this.state = {
-      lastRefreshed: null,
+      lastRefresh: null,
       isLoading: false,
       status: null,
+      nextRefresh: Date.now() + this.refreshInterval,
     };
   }
 
@@ -61,7 +59,8 @@ class Root extends Component {
       .then(status => {
         this.setState({
           isLoading: false,
-          lastRefreshed: Date.now(),
+          lastRefresh: Date.now(),
+          nextRefresh: Date.now() + this.refreshInterval,
           status,
         });
         this.refreshHandler = setTimeout(this.fetchStatus, this.refreshInterval);
@@ -82,10 +81,11 @@ class Root extends Component {
     const {
       status,
       isLoading,
-      lastRefreshed,
+      lastRefresh,
+      nextRefresh,
     } = this.state;
 
-    if(isLoading && !lastRefreshed) {
+    if(isLoading && !lastRefresh) {
       return (
         <span>Initial load ...</span>
       );
@@ -95,30 +95,8 @@ class Root extends Component {
       <div>
         <MainTitle
           showLoader={isLoading}
-          lastRefreshed={lastRefreshed}
-          handleForceRefresh={this.forceRefresh}
-        />
-        <div style={styles.container}>
-          {_.map(status, (c, key) =>
-            <TopLevelCard
-              title={key}
-              style={styles.card}
-              status={_.get(c, 'status')}
-              subtitle={_.get(c, 'description')}
-              headerMeta={_.get(c, 'summary')}
-              items={_.get(c, 'items')}
-              key={key}
-            />
-          )}
-        </div>
-      </div>
-    );
-
-    return(
-      <div>
-        <MainTitle
-          showLoader={isLoading}
-          lastRefreshed={lastRefreshed}
+          lastRefresh={lastRefresh}
+          nextRefresh={nextRefresh}
           handleForceRefresh={this.forceRefresh}
         />
         <div style={styles.container}>
